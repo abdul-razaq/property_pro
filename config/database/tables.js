@@ -12,7 +12,7 @@ export const usersTable = `
     bio               VARCHAR(250),
     role              VARCHAR(10) NOT NULL DEFAULT 'user' CONSTRAINT valid_role CHECK(role = 'user' OR role = 'agent' OR role = 'admin'),
     date_registered   TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    active            BOOLEAN DEFAULT false CONSTRAINT active_values CHECK(active = true OR active = false),
+    active            BOOLEAN DEFAULT true CONSTRAINT active_values CHECK(active = true OR active = false),
     verified          BOOLEAN DEFAULT false CONSTRAINT verified_values CHECK(active = true OR active = false),
     token             VARCHAR(200),
     hashed_token      VARCHAR(250),
@@ -40,10 +40,15 @@ export const propertyTable = `
   );
 `;
 
-const flagsTable = `
-  flag_id         BIGSERIAL NOT NULL PRIMARY KEY,
-  property        BIGINT REFERENCES properties(property_id) ON DELETE RESTRICT,
-  created_on      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  reason          VARCHAR(100) NOT NULL,
-  description     TEXT,
+export const flagsTable = `
+  CREATE TABLE IF NOT EXISTS
+  flags (
+    flag_id         BIGSERIAL NOT NULL PRIMARY KEY,
+    property        BIGINT REFERENCES properties(property_id) ON DELETE RESTRICT,
+    created_on      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    reason          VARCHAR(100) NOT NULL,
+    description     TEXT,
+  );
+
+  CREATE INDEX IF NOT EXISTS reason_index ON flags(reason);
 `;
