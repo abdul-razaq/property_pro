@@ -39,3 +39,11 @@ export const propertyTable = `
     property_image  VARCHAR(250),
   );
 `;
+
+const flagsTable = `
+  flag_id         BIGSERIAL NOT NULL PRIMARY KEY,
+  property        BIGINT REFERENCES properties(property_id) ON DELETE RESTRICT,
+  created_on      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  reason          VARCHAR(100) NOT NULL,
+  description     TEXT,
+`;
