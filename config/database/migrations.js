@@ -36,6 +36,7 @@ async function createAdminUser(usersTable) {
 
 export default {
 	/**
+	 * @function
 	 * Create users, property, flags tables.
 	 * Insert Admin user to users table.
 	 */

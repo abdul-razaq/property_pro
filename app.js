@@ -10,6 +10,10 @@ import helmet from 'helmet';
 import xss from 'xss-clean';
 import compression from 'compression';
 
+import Response from './helpers/responses.js';
+
+import globalErrorHandler from "./middlewares/error_handler.js";
+
 dotenv.config();
 
 const basePath = '/api/v1';
@@ -32,5 +36,20 @@ app.use(express.json({
   limit: '10kb',
 }));
 process.env.APP_MODE === "DEVELOPMENT" && app.use(morgan('dev'));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET POST PUT PATCH DELETE');
+    return Response.OK(res);
+  }
+  next();
+});
+
+app.all('*', (req, res, next) => {
+  return Response.routeNotImplemented(res, 'route not implemented on this server.');
+});
+app.use(globalErrorHandler);
 
 export default app;
