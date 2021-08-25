@@ -27,7 +27,7 @@ export const propertyTable = `
   CREATE TABLE IF NOT EXISTS
   properties (
     property_id     BIGSERIAL NOT NULL PRIMARY KEY,
-    owner           BIGINT REFERENCES users(user_id) NOT NULL ON DELETE RESTRICT,
+    owner           BIGINT REFERENCES users(user_id) ON DELETE RESTRICT NOT NULL,
     status          VARCHAR(10) DEFAULT 'available' CONSTRAINT verified_status CHECK(status = 'available' OR status = 'sold' OR status = 'rent'),
     type            VARCHAR(100) NOT NULL,
     price           MONEY NOT NULL,
@@ -36,7 +36,7 @@ export const propertyTable = `
     address         VARCHAR(250) NOT NULL,
     created_on      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_on      TIMESTAMPTZ,
-    property_image  VARCHAR(250),
+    property_image  VARCHAR(250)
   );
 `;
 
@@ -47,7 +47,7 @@ export const flagsTable = `
     property        BIGINT REFERENCES properties(property_id) ON DELETE RESTRICT,
     created_on      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     reason          VARCHAR(100) NOT NULL,
-    description     TEXT,
+    description     TEXT
   );
 
   CREATE INDEX IF NOT EXISTS reason_index ON flags(reason);

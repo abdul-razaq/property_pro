@@ -1,10 +1,12 @@
-import http2 from "http2";
+import http from "http";
 import dotenv from "dotenv";
+
+import app from "./app.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT ?? 3000;
-const server = http2.createServer();
+const server = http.createServer(app);
 
 server.listen(PORT, "localhost", () => {
 	console.info(`Server listening for incoming requests on port ${PORT}`);

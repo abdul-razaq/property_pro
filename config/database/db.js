@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Pool } from "node-postgres";
+import pg from "pg";
 
 dotenv.config();
 
@@ -8,7 +8,7 @@ const connectionString =
 		? process.env.DEV_DB_CONN_STRING
 		: PROD_DB_CONN_STRING;
 
-const pool = new Pool({
+const pool = new pg.Pool({
 	connectionString,
 });
 

@@ -1,7 +1,7 @@
 import argon2 from "argon2";
 
-import dbConnection from "./db";
-import { usersTable, propertyTable, flagsTable } from "./tables";
+import dbConnection from "./db.js";
+import { usersTable, propertyTable, flagsTable } from "./tables.js";
 
 /**
  * Create an Admin User.
@@ -15,7 +15,7 @@ async function createAdminUser(usersTable) {
 	try {
 		const hashedPassword = await argon2.hash(adminPassword, { saltLength: 10 });
 
-		const query = `INSERT INTO ${usersTable} (email, first_name, last_name, password, phone_number, address, role, verified)  VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;
+		const query = `INSERT INTO ${usersTable} (email, first_name, last_name, password, phone_number, address, role, verified)  VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT DO NOTHING;`;
 
 		const queryParams = [
 			adminEmail,
