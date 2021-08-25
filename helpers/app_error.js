@@ -26,5 +26,6 @@ export class UnImplementedError extends AppError {
 			`Missing concrete implementation of ${methodName}`,
 			httpStatuses.statusNotImplemented
 		);
+    this.isOperational = false;
 	}
 }
