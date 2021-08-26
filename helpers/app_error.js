@@ -23,7 +23,7 @@ export class AppError extends Error {
 export class UnImplementedError extends AppError {
 	constructor(methodName) {
 		super(
-			`Missing concrete implementation of ${methodName}`,
+			`Missing concrete implementation of method ${methodName}`,
 			httpStatuses.statusNotImplemented
 		);
     this.isOperational = false;
