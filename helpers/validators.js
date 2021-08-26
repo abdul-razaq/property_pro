@@ -83,8 +83,8 @@ class AbstractValidator {
 	 *
 	 * @returns {boolean}
 	 */
-	hasInvalidSpecialCharacters(phoneNumber) {
-		throw new UnImplementedError(this.hasInvalidSpecialCharacters.name);
+	containsInvalidSpecialCharacters(phoneNumber) {
+		throw new UnImplementedError(this.containsInvalidSpecialCharacters.name);
 	}
 }
 
@@ -110,6 +110,15 @@ class AbstractAuthValidator extends AbstractValidator {
 	 */
 	isValidPassword(password) {
 		throw new UnImplementedError(this.isValidPassword.name);
+	}
+
+	/**
+	 * Checks to see if argument passed contains any bad password combination.
+	 * @param {string} password
+	 * @returns {boolean} boolean
+	 */
+	containsBadPassword(password) {
+		throw new UnImplementedError(this.containsBadPassword.name);
 	}
 }
 
