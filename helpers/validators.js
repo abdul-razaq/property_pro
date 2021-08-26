@@ -66,29 +66,6 @@ class AbstractValidator {
 	isEmpty(value) {
 		throw new UnImplementedError(this.isEmpty.name);
 	}
-}
-
-class AbstractAuthValidator extends AbstractValidator {
-	constructor() {}
-	/**
-	 * Checks to see whether argument passed is a valid email address.
-	 * @param {string} email
-	 *
-	 * @returns {boolean}
-	 */
-	isValidEmail(email) {
-		throw new UnImplementedError(this.isValidEmail.name);
-	}
-
-	/**
-	 * Checks to see whether argument passed is a valid password.
-	 * @param {string} password
-	 *
-	 * @returns {boolean}
-	 */
-	isValidPassword(password) {
-		throw new UnImplementedError(this.isValidPassword.name);
-	}
 
 	/**
 	 * Checks to see whether argument passed is 11 digits long and contains only numbers.
@@ -108,6 +85,31 @@ class AbstractAuthValidator extends AbstractValidator {
 	 */
 	hasInvalidSpecialCharacters(phoneNumber) {
 		throw new UnImplementedError(this.hasInvalidSpecialCharacters.name);
+	}
+}
+
+class AbstractAuthValidator extends AbstractValidator {
+	constructor() {
+		super();
+	}
+	/**
+	 * Checks to see whether argument passed is a valid email address.
+	 * @param {string} email
+	 *
+	 * @returns {boolean}
+	 */
+	isValidEmail(email) {
+		throw new UnImplementedError(this.isValidEmail.name);
+	}
+
+	/**
+	 * Checks to see whether argument passed is a valid password.
+	 * @param {string} password
+	 *
+	 * @returns {boolean}
+	 */
+	isValidPassword(password) {
+		throw new UnImplementedError(this.isValidPassword.name);
 	}
 }
 
@@ -182,6 +184,28 @@ export class Validator extends AbstractValidator {
 		if (this.isString(value) && !value.trim()) return true;
 		return false;
 	}
+
+	/**
+	 * Checks to see whether argument passed is 11 digits long and contains only numbers.
+	 * @param {string} phoneNumber
+	 *
+	 * @returns {boolean}
+	 */
+	isValidPhoneNumber(phoneNumber) {
+		return super.isString(phoneNumber) && /^\d{11}$/.test(phoneNumber);
+	}
+
+	/**
+	 * Checks to see whether argument passed contains special characters, i.e if argument contains any of the following characters +/*$^()[]{}\|~`&!@#%_=:;"'<>,.?).
+	 * @param {string} value
+	 *
+	 * @returns {boolean}
+	 */
+	containsInvalidSpecialCharacters(value) {
+		const badCharRegExp =
+			/[+/*$^()[\]{}\\|~`&!@#%_=:;"'<>,.?]|(^-)|(-$)|(^-$)|(-{2,})/g;
+		return badCharRegExp.test(value);
+	}
 }
 
 export class AuthValidator extends AbstractAuthValidator {
@@ -232,27 +256,5 @@ export class AuthValidator extends AbstractAuthValidator {
 			"toor",
 		];
 		return badPasswords.includes(password);
-	}
-
-	/**
-	 * Checks to see whether argument passed is 11 digits long and contains only numbers.
-	 * @param {string} phoneNumber
-	 *
-	 * @returns {boolean}
-	 */
-	isValidPhoneNumber(phoneNumber) {
-		return super.isString(phoneNumber) && /^\d{11}$/.test(phoneNumber);
-	}
-
-	/**
-	 * Checks to see whether argument passed contains special characters, i.e if argument contains any of the following characters +/*$^()[]{}\|~`&!@#%_=:;"'<>,.?).
-	 * @param {string} value
-	 *
-	 * @returns {boolean}
-	 */
-	containsInvalidSpecialCharacters(value) {
-		const badCharRegExp =
-			/[+/*$^()[\]{}\\|~`&!@#%_=:;"'<>,.?]|(^-)|(-$)|(^-$)|(-{2,})/g;
-		return badCharRegExp.test(value);
 	}
 }
