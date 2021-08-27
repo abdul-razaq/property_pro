@@ -50,7 +50,7 @@ export default class Email {
 	 * @private @method
 	 * sends email using the pre-configured transport object.
 	 * @param {string} htmlTemplate email body in html.
-	 * @param {string} subject subject to include in the email body.
+	 * @param {string} subject email subject to include in the email body.
 	 */
 	async _sendEmail(htmlTemplate, subject) {
 		const emailData = {
