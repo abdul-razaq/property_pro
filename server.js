@@ -12,6 +12,10 @@ server.listen(PORT, "localhost", () => {
 	console.info(`Server listening for incoming requests on port ${PORT}`);
 });
 
+server.on("error", err => {
+	handleUnhandledError("uncaughtException", err);
+});
+
 function handleUnhandledError(errorType, err) {
 	if (process.env.APP_MODE === "DEVELOPMENT") {
 		console.info(

@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 
 import express from "express";
-import Migration from "./config/database/migrations.js";
 
 import cors from 'cors';
 import morgan from 'morgan';
@@ -12,6 +11,7 @@ import compression from 'compression';
 
 import Response from './helpers/responses.js';
 
+import Migration from "./config/database/migrations.js";
 import globalErrorHandler from "./middlewares/error_handler.js";
 
 dotenv.config();
