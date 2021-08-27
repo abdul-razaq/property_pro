@@ -1,6 +1,7 @@
 import Response from "../../helpers/responses.js";
 import Email from "../../helpers/email.js";
 import httpStatuses from "../../helpers/http_statuses.js";
+import Token from "../../helpers/token.js";
 
 export async function RegisterUser(req, res, next) {
 	if (req.errorExists)
@@ -11,12 +12,13 @@ export async function RegisterUser(req, res, next) {
 			{ errors: req.errors }
 		);
 	// TODO: Create a User model and instantiate the userDetails object with the User model passing in the signIn Input details.
-	const userDetails = {};
-	// TODO: Use the Token class to create a new "confirmation token".
-	const confirmationToken = "<confirmation_token>";
+	const tokenObj = new Token();
+	const confirmationToken = tokenObj.generateToken().token;
+	const hashedToken = tokenObj.hashToken();
 	const confirmationLink = `${req.protocol}://${req.get("host")}${
 		process.env.API_VERSION
 	}/auth/email_confirmation/${confirmationToken}`;
+	const userDetails = {};
 	try {
 		await new Email(userDetails, confirmationLink).sendConfirmationEmail();
 		return Response.OK(
