@@ -21,13 +21,17 @@ export default class Token {
 		throw new AppError("cannot set token.");
 	}
 
-  get hashedToken() {
-    return this._hashedToken;
-  }
+	/**
+	 * @public @getter
+	 * returns the hashed token.
+	 */
+	get hashedToken() {
+		return this._hashedToken;
+	}
 
-  set hashedToken(_) {
-    throw new AppError("cannot set hashed token.")
-  }
+	set hashedToken(_) {
+		throw new AppError("cannot set hashed token.");
+	}
 
 	/**
 	 * @public @method
