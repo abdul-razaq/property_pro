@@ -23,7 +23,7 @@ class Validator {
 		if (!email || basicValidator.isEmpty(email)) {
 			errors.push("Email field cannot be empty.");
 		}
-		if (!authValidator.isValidEmail(email)) {
+		if (email && !authValidator.isValidEmail(email)) {
 			errors.push("Invalid email address.");
 		}
 		return errors;
@@ -44,10 +44,13 @@ class Validator {
 		if (!password || basicValidator.isEmpty(password)) {
 			errors.push("password field cannot be empty.");
 		}
-		if (!authValidator.isValidPassword(password)) {
+		if (password && !basicValidator.containsNumber(password)) {
+			errors.push("password value must contain letters and numbers.");
+		}
+		if (password && !authValidator.isValidPassword(password)) {
 			errors.push("password field must contain 8 characters or more.");
 		}
-		if (!authValidator.containsBadPassword(password)) {
+		if (password && authValidator.containsBadPassword(password)) {
 			errors.push(`password field cannot contain the value '${password}'.`);
 		}
 		if (confirmPassword !== password) {
@@ -201,12 +204,16 @@ export class UserValidator {
 		errors.address = [...Validator.validateAgentAddress(address, role)];
 		errors.phoneNumber = [...Validator.validatePhoneNumber(phone_number, role)];
 		const validRoles = ["agent", "user"];
-		if (!validRoles.includes(role)) {
+		if (role && !validRoles.includes(role)) {
 			errors.role.push("role field must be either 'user' or 'agent'.");
 			role = "user";
 		}
 
+		for (let key in errors) {
+			if (!errors[key].length) delete errors[key];
+		}
 		req.errors = errors;
+		req.errorExists = !!Object.keys(errors).length;
 		req.body = signUpFields;
 		next();
 	}

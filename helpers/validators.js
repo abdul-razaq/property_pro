@@ -201,7 +201,7 @@ export class Validator extends AbstractValidator {
 	 * @returns {boolean}
 	 */
 	isValidPhoneNumber(phoneNumber) {
-		return super.isString(phoneNumber) && /^\d{11}$/.test(phoneNumber);
+		return this.isString(phoneNumber) && /^\d{11}$/.test(phoneNumber);
 	}
 
 	/**
@@ -217,7 +217,7 @@ export class Validator extends AbstractValidator {
 	}
 }
 
-export class AuthValidator extends AbstractAuthValidator {
+export class AuthValidator extends Validator {
 	constructor() {
 		super();
 	}
@@ -231,7 +231,7 @@ export class AuthValidator extends AbstractAuthValidator {
 	isValidEmail(email) {
 		const emailRegExp =
 			/^(\D)+(\w)*((\.(\w)+)?)+@(\D)+(\w)*((\.(\D)+(\w)*)+)?(\.)[a-z]{2,}$/;
-		return super.isString(email) && emailRegExp.test(email);
+		return this.isString(email) && emailRegExp.test(email);
 	}
 
 	/**
@@ -240,7 +240,7 @@ export class AuthValidator extends AbstractAuthValidator {
 	 * @returns {boolean} boolean.
 	 */
 	isValidPassword(password) {
-		return super.isString(password) && password.trim().length >= 8;
+		return this.isString(password) && password.trim().length >= 8;
 	}
 
 	/**

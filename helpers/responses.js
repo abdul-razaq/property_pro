@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { AppError } from "./app_error.js";
 
 import httpStatuses from "./http_statuses.js";
 
@@ -19,11 +20,14 @@ export default class Response {
 	 * Method is private and not to be used outside of this class.
 	 */
 	static _sendResponse(res, code, message, data, error) {
-		const errorStatus = String(code).startsWith("2")
-			? "success"
-				? String(code).startsWith("4")
-				: "fail"
-			: "error";
+		let errorStatus;
+		if (String(code).startsWith("2")) {
+			errorStatus = "success";
+		} else if (String(code).startsWith("4")) {
+			errorStatus = "fail";
+		} else {
+			errorStatus = "error";
+		}
 		return res.status(code).json({
 			status: errorStatus,
 			code: code,
@@ -43,7 +47,7 @@ export default class Response {
 	 * Send success response message.
 	 */
 
-	static sendErrorResponse(res, error) {
+	static _sendErrorResponse(res, error, data) {
 		if (process.env.APP_MODE === "DEVELOPMENT") {
 			!error.statusCode &&
 				((error.statusCode = httpStatuses.statusBadRequest),
@@ -52,14 +56,15 @@ export default class Response {
 				res,
 				error.statusCode,
 				error.message,
-				undefined,
+				data,
 				error
 			);
 		} else {
 			if (error.isOperational) {
-				return this._sendResponse(res, error.statusCode, error.message);
+				return this._sendResponse(res, error.statusCode, error.message, data);
 			}
 			console.error(`INTERNAL/NON-OPERATIONAL ERROR: ${error}`);
+			console.error(error.stack);
 			return this._sendResponse(
 				res,
 				httpStatuses.statusInternalServerError,
@@ -90,7 +95,26 @@ export default class Response {
 	 *
 	 * Send route not implemented response.
 	 */
-	static routeNotImplemented(res, message, data) {
-		return this._sendResponse(res, httpStatuses.statusNotImplemented, message, data);
+	static routeNotImplemented(res, message) {
+		return this._sendResponse(res, httpStatuses.statusNotImplemented, message);
+	}
+
+	/**
+	 * @public
+	 * @method
+	 * @param {*} res HTTP Response object
+	 * @param {*} data data value to send along in the HTTP response
+	 *
+	 * Send error response.
+	 */
+	static error(res, data) {
+		return this._sendErrorResponse(
+			res,
+			new AppError(
+				"validation error. check input values provided.",
+				httpStatuses.statusBadRequest
+			),
+			data
+		);
 	}
 }

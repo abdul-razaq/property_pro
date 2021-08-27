@@ -6,7 +6,7 @@ dotenv.config();
 const connectionString =
 	process.env.APP_MODE === "DEVELOPMENT"
 		? process.env.DEV_DB_CONN_STRING
-		: PROD_DB_CONN_STRING;
+		: process.env.PROD_DB_CONN_STRING;
 
 const pool = new pg.Pool({
 	connectionString,
