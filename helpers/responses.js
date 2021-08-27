@@ -107,13 +107,10 @@ export default class Response {
 	 *
 	 * Send error response.
 	 */
-	static error(res, data) {
+	static error(res, message, statusCode, data) {
 		return this._sendErrorResponse(
 			res,
-			new AppError(
-				"validation error. check input values provided.",
-				httpStatuses.statusBadRequest
-			),
+			new AppError(message, statusCode),
 			data
 		);
 	}
