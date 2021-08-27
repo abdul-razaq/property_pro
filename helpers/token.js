@@ -18,8 +18,16 @@ export default class Token {
 	}
 
 	set token(_) {
-		throw new AppError("cannot set token!");
+		throw new AppError("cannot set token.");
 	}
+
+  get hashedToken() {
+    return this._hashedToken;
+  }
+
+  set hashedToken(_) {
+    throw new AppError("cannot set hashed token.")
+  }
 
 	/**
 	 * @public @method
@@ -35,7 +43,7 @@ export default class Token {
 
 	/**
 	 * @public @method
-	 * Hash the generated or provided token.
+	 * Hash the previously generated or provided token.
 	 * @param {string} token the token to hash.
 	 * @param {string} algorithm the algorithm to use in hashing the token.
 	 * @param {string} outputFormat the output format for the hashed token.
