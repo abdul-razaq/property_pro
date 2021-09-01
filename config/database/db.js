@@ -33,9 +33,7 @@ const dbConnection = {
 				client.release();
 			}
 		} catch (e) {
-			setImmediate(() => {
-				throw e;
-			});
+			throw e;
 		}
 	},
 };

@@ -9,4 +9,6 @@ router
 	.route("/register")
 	.post(UserValidator.validateSignUp, authControllers.RegisterUser);
 
+router.route("/email_confirmation/:token").all(authControllers.verifyEmail);
+
 export default router;

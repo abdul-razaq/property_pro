@@ -22,8 +22,9 @@ export async function RegisterUser(req, res, next) {
 	}/auth/email_confirmation/${confirmationToken}`;
 	const user = new User(req.body);
 	user.hashedToken = hashedToken;
-	const newUser = await UserServices.createUser(user);
+	let newUser;
 	try {
+		newUser = await UserServices.createUser(user);
 		await new Email(
 			user.email,
 			user.firstName,
@@ -35,11 +36,43 @@ export async function RegisterUser(req, res, next) {
 			newUser
 		);
 	} catch (error) {
-		await UserServices.deleteUser(newUser.user_id);
+		if (error.message.includes("unique_email"))
+			return Response.error(
+				res,
+				"email address already in use.",
+				httpStatuses.statusForbidden
+			);
+		await UserServices.deleteUser(newUser?.user_id);
 		return Response.error(
 			res,
 			"unable to send confirmation email. try again in few minutes time.",
 			httpStatuses.statusInternalServerError
 		);
 	}
+}
+
+export async function verifyEmail(req, res, next) {
+	const hashedToken = new Token().hashToken(req.params.token);
+	const user = await UserServices.findUserByToken(hashedToken);
+	if (!user)
+		Response.error(
+			res,
+			"token is invalid or has expired.",
+			httpStatuses.statusBadRequest
+		);
+	await UserServices.verifyUser(user.user_id);
+	const jwt = User.generateJWT(user.user_id, user.email);
+	const cookieOptions = {
+		expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+		httpOnly: true,
+		secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+	};
+	res.cookie("jwt", jwt, cookieOptions);
+	const welcomeLink = `${req.protocol}://${req.get("host")}/${
+		process.env.API_VERSION
+	}/users/profile`;
+	try {
+		await new Email(user.email, user.firstName, welcomeLink).sendWelcomeEmail();
+		Response.OK(res, "email verification successful.", { token: jwt, user });
+	} catch (error) {}
 }

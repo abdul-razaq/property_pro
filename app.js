@@ -15,6 +15,7 @@ import Migration from "./config/database/migrations.js";
 import globalErrorHandler from "./middlewares/error_handler.js";
 
 import authRouter from "./routers/auth/index.js";
+import userRouter from "./routers/user/index.js";
 
 dotenv.config();
 
@@ -59,6 +60,7 @@ app.use((req, res, next) => {
 });
 
 app.use(`${basePath}/auth`, authRouter);
+app.use(`${basePath}/users`, userRouter);
 app.use(`${basePath}/`, (req, res, next) => {
 	return Response.OK(res, "Welcome to PropertyPro API.");
 });
