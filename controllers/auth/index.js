@@ -85,5 +85,27 @@ export async function verifyEmail(req, res, next) {
 }
 
 export async function loginUser(req, res, next) {
-	
+	if (req.errorExists)
+		return Response.error(
+			res,
+			"validation failed. check input values provided.",
+			httpStatuses.statusBadRequest,
+			{ errors: req.errors }
+		);
+	const { email, password } = req.body;
+	const user = await UserServices.findUser(null, email);
+	if (!user)
+		return Response.error(
+			res,
+			"user with this email address does not exist.",
+			httpStatuses.statusForbidden
+		);
+	if (!(await User.isValidPassword(email, password)))
+		return Response.error(
+			res,
+			"invalid email address or password.",
+			httpStatuses.statusForbidden
+		);
+	const jwt = User.generateJWT(user.user_id, email);
+	Response.OK(res, "login successful", { token: jwt, user });
 }
