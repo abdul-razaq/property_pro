@@ -38,4 +38,12 @@ export default class User {
 	static async hasChangedPassword(userId, jwtIat) {
 		return await UserServices.hasChangedPassword(userId, jwtIat);
 	}
+	/**
+	 * verifies user password.
+	 * @param {object} user user details
+	 * @returns boolean
+	 */
+	static async isValidPassword(email, password) {
+		return await UserServices.verifyPassword(email, password);
+	}
 }
