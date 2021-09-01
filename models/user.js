@@ -40,7 +40,8 @@ export default class User {
 	}
 	/**
 	 * verifies user password.
-	 * @param {object} user user details
+	 * @param {email} user user email address
+	 * @param {password} user user password
 	 * @returns boolean
 	 */
 	static async isValidPassword(email, password) {

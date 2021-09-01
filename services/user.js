@@ -109,6 +109,12 @@ export default class UserServices {
 		return false;
 	}
 
+	/**
+	 * verifies user password.
+	 * @param {email} user user email address
+	 * @param {password} user user password
+	 * @returns boolean
+	 */
 	static async verifyPassword(email, password) {
 		const query = "SELECT password FROM users WHERE email = $1";
 		const {
