@@ -1,11 +1,11 @@
 import express from "express";
 
 import * as userControllers from "../../controllers/user/index.js";
-// import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "../../middlewares/authenticate.js";
 
 const router = express.Router();
 
-// router.use(authenticate);
+router.use(authenticate);
 
 router
 	.route("/profile")

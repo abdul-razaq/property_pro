@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+import UserServices from "../services/user.js";
+
 /**
  * @constructor
  * Defines the User model.
@@ -26,5 +28,14 @@ export default class User {
 			expiresIn: "30d",
 		});
 		return jwtToken;
+	}
+	/**
+	 * check to see if user has changed their password after jwt has been issued.
+	 * @param {string} userId user id
+	 * @param {string} jwtIat jwt issued at time
+	 * @returns boolean
+	 */
+	static async hasChangedPassword(userId, jwtIat) {
+		return await UserServices.hasChangedPassword(userId, jwtIat);
 	}
 }

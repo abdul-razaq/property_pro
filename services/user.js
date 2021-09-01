@@ -78,4 +78,34 @@ export default class UserServices {
 		const params = [null, null, true, userId];
 		await dbConnection.queryDB(query, params);
 	}
+	
+	/**
+	 * find a user by id or email address.
+	 * @param {string} userId id of user to find
+	 * @param {email} email email address of user to find
+	 * @returns object
+	 */
+	static async findUser(userId, email) {
+		const query =
+			"SELECT user_id, email, first_name, last_name, avatar, phone_number, address, bio, role, date_registered FROM users WHERE user_id = $1 OR email = $2";
+		const result = await dbConnection.queryDB(query, [userId, email]);
+		return result.rows[0];
+	}
+
+	/**
+	 * checks to see if user has changed their password
+	 * @param {string} userId user id
+	 * @param {number} jwtIat jwt issued at time.
+	 * @returns boolean
+	 */
+	static async hasChangedPassword(userId, jwtIat) {
+		const query = "SELECT password_changed_at FROM users WHERE user_id = $1";
+		const result = await dbConnection.queryDB(query, [userId]);
+		const passwordChangedAt = result.rows[0].password_changed_at;
+		// console.log(passwordChangedAt, jwtIat);
+		if (passwordChangedAt !== null) {
+			return passwordChangedAt > jwtIat;
+		};
+		return false;
+	}
 }

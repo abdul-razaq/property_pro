@@ -7,8 +7,9 @@ const router = Router();
 
 router
 	.route("/register")
-	.post(UserValidator.validateSignUp, authControllers.RegisterUser);
+	.put(UserValidator.validateSignUp, authControllers.RegisterUser);
 
 router.route("/email_confirmation/:token").all(authControllers.verifyEmail);
+router.post("/login", authControllers.loginUser);
 
 export default router;

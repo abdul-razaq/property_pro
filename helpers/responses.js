@@ -47,7 +47,7 @@ export default class Response {
 	 * Send success response message.
 	 */
 
-	static _sendErrorResponse(res, error, data) {
+	static sendErrorResponse(res, error, data) {
 		if (process.env.APP_MODE === "DEVELOPMENT") {
 			!error.statusCode &&
 				((error.statusCode = httpStatuses.statusInternalServerError),
@@ -112,6 +112,6 @@ export default class Response {
 			statusCode === httpStatuses.statusInternalServerError
 				? new Error(message, statusCode)
 				: new AppError(message, statusCode);
-		return this._sendErrorResponse(res, errObj, data);
+		return this.sendErrorResponse(res, errObj, data);
 	}
 }

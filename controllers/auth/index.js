@@ -23,6 +23,7 @@ export async function RegisterUser(req, res, next) {
 	const user = new User(req.body);
 	user.hashedToken = hashedToken;
 	let newUser;
+	console.log(confirmationToken);
 	try {
 		newUser = await UserServices.createUser(user);
 		await new Email(
@@ -42,7 +43,7 @@ export async function RegisterUser(req, res, next) {
 				"email address already in use.",
 				httpStatuses.statusForbidden
 			);
-		await UserServices.deleteUser(newUser?.user_id);
+		// await UserServices.deleteUser(newUser?.user_id);
 		return Response.error(
 			res,
 			"unable to send confirmation email. try again in few minutes time.",
@@ -81,4 +82,8 @@ export async function verifyEmail(req, res, next) {
 	} finally {
 		Response.OK(res, "email confirmation successful.", { token: jwt, user });
 	}
+}
+
+export async function loginUser(req, res, next) {
+	
 }
