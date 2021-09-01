@@ -183,7 +183,7 @@ export class UserValidator {
 			"hashed_token",
 			"token_expires_in",
 		];
-		const signUpFields = filterObject(reqBody, ...unwantedFields);
+		const signUpFields = filterObject(reqBody, unwantedFields);
 		let {
 			email,
 			password,
@@ -195,20 +195,17 @@ export class UserValidator {
 			role,
 		} = signUpFields;
 
-		errors.email = [...Validator.validateEmail(email)];
-		errors.password = [
-			...Validator.validatePassword(password, confirm_password),
-		];
-		errors.firstName = [...Validator.validateName(first_name, "first_name")];
-		errors.lastName = [...Validator.validateName(last_name, "last_name")];
-		errors.address = [...Validator.validateAgentAddress(address, role)];
-		errors.phoneNumber = [...Validator.validatePhoneNumber(phone_number, role)];
+		errors.email = Validator.validateEmail(email);
+		errors.password = Validator.validatePassword(password, confirm_password);
+		errors.firstName = Validator.validateName(first_name, "first_name");
+		errors.lastName = Validator.validateName(last_name, "last_name");
+		errors.address = Validator.validateAgentAddress(address, role);
+		errors.phoneNumber = Validator.validatePhoneNumber(phone_number, role);
 		const validRoles = ["agent", "user"];
 		if (role && !validRoles.includes(role)) {
 			errors.role.push("role field must be either 'user' or 'agent'.");
 			role = "user";
 		}
-
 		for (let key in errors) {
 			if (!errors[key].length) delete errors[key];
 		}

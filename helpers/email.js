@@ -13,10 +13,10 @@ import {
  * Handles Email sending.
  */
 export default class Email {
-	constructor(userDetails, url) {
+	constructor(userEmail, firstName, url) {
 		this._emailSender = `PropertyPro <${process.env.EMAIL_SENDER}>`;
-		this._userEmail = userDetails.email;
-		this._firstName = userDetails.firstName;
+		this._userEmail = userEmail;
+		this._firstName = firstName;
 		this._url = url;
 	}
 
@@ -30,6 +30,8 @@ export default class Email {
 			return nodemailer.createTransport({
 				host: process.env.MAILTRAP_HOST,
 				port: process.env.MAILTRAP_PORT,
+				ssl: false,
+				tls: true,
 				auth: {
 					user: process.env.MAILTRAP_USERNAME,
 					pass: process.env.MAILTRAP_PASSWORD,
@@ -99,10 +101,10 @@ export default class Email {
 		);
 	}
 
-  /**
-   * @public @method
-   * Sends a password reset link to the provided email address.
-   */
+	/**
+	 * @public @method
+	 * Sends a password reset link to the provided email address.
+	 */
 	async sendPasswordResetEmail() {
 		const passwordResetTemplate = PasswordResetTemplate.replaceAll(
 			"<passwordResetLink>",

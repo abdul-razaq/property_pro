@@ -50,8 +50,8 @@ export default class Response {
 	static _sendErrorResponse(res, error, data) {
 		if (process.env.APP_MODE === "DEVELOPMENT") {
 			!error.statusCode &&
-				((error.statusCode = httpStatuses.statusBadRequest),
-				(error.status = "fail"));
+				((error.statusCode = httpStatuses.statusInternalServerError),
+				(error.status = "error"));
 			return this._sendResponse(
 				res,
 				error.statusCode,
@@ -108,10 +108,10 @@ export default class Response {
 	 * Send error response.
 	 */
 	static error(res, message, statusCode, data) {
-		return this._sendErrorResponse(
-			res,
-			new AppError(message, statusCode),
-			data
-		);
+		const errObj =
+			statusCode === httpStatuses.statusInternalServerError
+				? new Error(message, statusCode)
+				: new AppError(message, statusCode);
+		return this._sendErrorResponse(res, errObj, data);
 	}
 }

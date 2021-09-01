@@ -7,19 +7,17 @@ export const usersTable = `
     last_name         VARCHAR(150) NOT NULL,
     password          VARCHAR(250) NOT NULL,
     avatar            VARCHAR(250),
-    phone_number      VARCHAR(20) NOT NULL,
-    address           VARCHAR(250) NOT NULL,
+    phone_number      VARCHAR(20),
+    address           VARCHAR(250),
     bio               VARCHAR(250),
-    role              VARCHAR(10) NOT NULL DEFAULT 'user' CONSTRAINT valid_role CHECK(role = 'user' OR role = 'agent' OR role = 'admin'),
+    role              VARCHAR(10) DEFAULT 'user' CONSTRAINT valid_role CHECK(role = 'user' OR role = 'agent' OR role = 'admin'),
     date_registered   TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     active            BOOLEAN DEFAULT true CONSTRAINT active_values CHECK(active = true OR active = false),
     verified          BOOLEAN DEFAULT false CONSTRAINT verified_values CHECK(active = true OR active = false),
-    token             VARCHAR(200),
-    hashed_token      VARCHAR(250),
+    hashed_token      VARCHAR(200),
     token_expires_in  TIMESTAMPTZ
   );
 
-  CREATE INDEX IF NOT EXISTS token_index ON users(token);
   CREATE INDEX IF NOT EXISTS hashed_token_index ON users(hashed_token);
 `;
 
