@@ -68,6 +68,10 @@ export default class UserServices {
 		return result.rows[0];
 	}
 
+	/**
+	 * verify the user with the given user id.
+	 * @param {string} userId user id of user to verify
+	 */
 	static async verifyUser(userId) {
 		const query =
 			"UPDATE users SET hashed_token = $1, token_expires_in = $2, verified = $3 WHERE user_id = $4";

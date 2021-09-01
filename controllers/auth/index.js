@@ -55,24 +55,30 @@ export async function verifyEmail(req, res, next) {
 	const hashedToken = new Token().hashToken(req.params.token);
 	const user = await UserServices.findUserByToken(hashedToken);
 	if (!user)
-		Response.error(
+		return Response.error(
 			res,
 			"token is invalid or has expired.",
 			httpStatuses.statusBadRequest
 		);
 	await UserServices.verifyUser(user.user_id);
 	const jwt = User.generateJWT(user.user_id, user.email);
-	const cookieOptions = {
+	const jwtCookieOptions = {
 		expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
 		httpOnly: true,
 		secure: req.secure || req.headers["x-forwarded-proto"] === "https",
 	};
-	res.cookie("jwt", jwt, cookieOptions);
+	res.cookie("jwt", jwt, jwtCookieOptions);
 	const welcomeLink = `${req.protocol}://${req.get("host")}/${
 		process.env.API_VERSION
 	}/users/profile`;
 	try {
-		await new Email(user.email, user.firstName, welcomeLink).sendWelcomeEmail();
-		Response.OK(res, "email verification successful.", { token: jwt, user });
-	} catch (error) {}
+		await new Email(
+			user.email,
+			user.first_name,
+			welcomeLink
+		).sendWelcomeEmail();
+	} catch (e) {
+	} finally {
+		Response.OK(res, "email confirmation successful.", { token: jwt, user });
+	}
 }
