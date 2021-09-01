@@ -10,6 +10,6 @@ router
 	.put(UserValidator.validateSignUp, authControllers.RegisterUser);
 
 router.route("/email_confirmation/:token").all(authControllers.verifyEmail);
-router.post("/login", authControllers.loginUser);
+router.post("/login", UserValidator.validateSignIn, authControllers.loginUser);
 
 export default router;

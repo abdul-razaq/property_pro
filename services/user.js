@@ -78,7 +78,7 @@ export default class UserServices {
 		const params = [null, null, true, userId];
 		await dbConnection.queryDB(query, params);
 	}
-	
+
 	/**
 	 * find a user by id or email address.
 	 * @param {string} userId id of user to find
@@ -105,7 +105,15 @@ export default class UserServices {
 		// console.log(passwordChangedAt, jwtIat);
 		if (passwordChangedAt !== null) {
 			return passwordChangedAt > jwtIat;
-		};
+		}
 		return false;
+	}
+
+	static async verifyPassword(email, password) {
+		const query = "SELECT password FROM users WHERE email = $1";
+		const {
+			rows: [{ password: hashedPassword }],
+		} = await dbConnection.queryDB(query, [email]);
+		return await argon2.verify(hashedPassword, password);
 	}
 }
