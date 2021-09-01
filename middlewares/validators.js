@@ -39,7 +39,7 @@ class Validator {
 	 * Calls @method isNumber validator method to check if password contains only numbers.
 	 * Calls @method containsBadPassword validator method to check if password contains forbidden passwords.
 	 */
-	static validatePassword(password, confirmPassword) {
+	static validatePassword(password, confirmPassword, isSignUpValidation) {
 		const errors = [];
 		if (!password || basicValidator.isEmpty(password)) {
 			errors.push("password field cannot be empty.");
@@ -53,7 +53,7 @@ class Validator {
 		if (password && authValidator.containsBadPassword(password)) {
 			errors.push(`password field cannot contain the value '${password}'.`);
 		}
-		if (confirmPassword !== password) {
+		if (isSignUpValidation && confirmPassword !== password) {
 			errors.push("password and confirm_password fields must match.");
 		}
 		return errors;
@@ -196,7 +196,11 @@ export class UserValidator {
 		} = signUpFields;
 
 		errors.email = Validator.validateEmail(email);
-		errors.password = Validator.validatePassword(password, confirm_password);
+		errors.password = Validator.validatePassword(
+			password,
+			confirm_password,
+			true
+		);
 		errors.firstName = Validator.validateName(first_name, "first_name");
 		errors.lastName = Validator.validateName(last_name, "last_name");
 		errors.address = Validator.validateAgentAddress(address, role);
@@ -229,10 +233,18 @@ export class UserValidator {
 			email: [],
 			password: [],
 		};
-		errors.email = [...Validator.validateEmail(req.body.email)];
-		errors.password = [...Validator.validatePassword(req.body.password)];
+		errors.email = Validator.validateEmail(req.body.email);
+		errors.password = Validator.validatePassword(
+			req.body.password,
+			null,
+			false
+		);
 
+		for (let key in errors) {
+			if (!errors[key].length) delete errors[key];
+		}
 		req.errors = errors;
+		req.errorExists = !!Object.keys(errors).length;
 		next();
 	}
 }
