@@ -111,8 +111,8 @@ export default class UserServices {
 
 	/**
 	 * verifies user password.
-	 * @param {email} user user email address
-	 * @param {password} user user password
+	 * @param {string} email user email address
+	 * @param {string} password user password
 	 * @returns boolean
 	 */
 	static async verifyPassword(email, password) {
@@ -123,6 +123,12 @@ export default class UserServices {
 		return await argon2.verify(hashedPassword, password);
 	}
 
+	/**
+	 * updates user password.
+	 * @param {string} userId user id
+	 * @param {password} newPassword user password
+	 * @returns boolean
+	 */
 	static async updateUserPassword(userId, newPassword) {
 		const hashedPassword = await argon2.hash(newPassword, { saltLength: 10 });
 		const query =
@@ -133,5 +139,31 @@ export default class UserServices {
 			userId,
 		]);
 		return !!rowCount;
+	}
+
+	/**
+	 * sets token for password reset.
+	 * @param {string} userId user id
+	 * @param {password} hashedToken hashed version of token sent to the user's email.
+	 * @returns undefined
+	 */
+	static async userForgotPassword(userId, hashedToken) {
+		const query =
+			"UPDATE users SET hashed_token = $1, token_expires_in = $2 WHERE user_id = $3";
+		await dbConnection.queryDB(query, [
+			hashedToken,
+			new Date(Date.now() + 10 * 60 * 1000),
+			userId,
+		]);
+	}
+
+	/**
+	 * reset the user token.
+	 * @param {string} userId user id
+	 */
+	static async resetUserToken(userId) {
+		const query =
+			"UPDATE users SET hashed_token = $1, token_expires_in = $2 WHERE user_id = $3";
+		await dbConnection.queryDB(query, [null, null, userId]);
 	}
 }

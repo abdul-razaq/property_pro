@@ -23,7 +23,6 @@ export async function RegisterUser(req, res, next) {
 	const user = new User(req.body);
 	user.hashedToken = hashedToken;
 	let newUser;
-	console.log(confirmationToken);
 	try {
 		newUser = await UserServices.createUser(user);
 		await new Email(
@@ -43,7 +42,7 @@ export async function RegisterUser(req, res, next) {
 				"email address already in use.",
 				httpStatuses.statusForbidden
 			);
-		// await UserServices.deleteUser(newUser?.user_id);
+		await UserServices.deleteUser(newUser?.user_id);
 		return Response.error(
 			res,
 			"unable to send confirmation email. try again in few minutes time.",
@@ -134,4 +133,41 @@ export async function updatePassword(req, res, next) {
 		return Response.error(res, "unable to update password.");
 	}
 	Response.OK(res, "password updated successfully.");
+}
+
+export async function forgotPassword(req, res, next) {
+	if (req.errorExists)
+		return Response.error(
+			res,
+			"validation failed. check email address provided.",
+			httpStatuses.statusBadRequest
+		);
+	const user = await UserServices.findUser(null, req.body.email);
+	if (!user)
+		return Response.error(
+			res,
+			"user with this email address does not exist.",
+			httpStatuses.statusForbidden
+		);
+	const tokenObj = new Token().generateToken();
+	const passwordResetToken = tokenObj.token;
+	const hashedToken = tokenObj.hashToken();
+	const passwordResetUrl = `${req.protocol}://${req.get("host")}${
+		process.env.API_VERSION
+	}/auth/password_reset/${passwordResetToken}`;
+	try {
+		await UserServices.userForgotPassword(user.user_id, hashedToken);
+		await new Email(
+			user.email,
+			user.first_name,
+			passwordResetUrl
+		).sendPasswordResetEmail();
+	} catch (error) {
+		await UserServices.resetUserToken(user.user_id);
+		return Response.error(
+			res,
+			"error sending password reset token. try again later."
+		);
+	}
+	Response.OK(res, "password reset token sent to email address.");
 }
