@@ -131,7 +131,7 @@ export async function updatePassword(req, res, next) {
 			req.body.new_password
 		))
 	) {
-		return next(new Error("unable to update password."));
+		return Response.error(res, "unable to update password.");
 	}
 	Response.OK(res, "password updated successfully.");
 }

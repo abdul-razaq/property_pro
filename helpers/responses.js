@@ -110,7 +110,10 @@ export default class Response {
 	static error(res, message, statusCode, data) {
 		const errObj =
 			statusCode === httpStatuses.statusInternalServerError
-				? new Error(message, statusCode)
+				? new Error(
+						message,
+						statusCode ?? httpStatuses.statusInternalServerError
+				  )
 				: new AppError(message, statusCode);
 		return this.sendErrorResponse(res, errObj, data);
 	}
