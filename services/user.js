@@ -122,4 +122,16 @@ export default class UserServices {
 		} = await dbConnection.queryDB(query, [email]);
 		return await argon2.verify(hashedPassword, password);
 	}
+
+	static async updateUserPassword(userId, newPassword) {
+		const hashedPassword = await argon2.hash(newPassword, { saltLength: 10 });
+		const query =
+			"UPDATE users SET password = $1, password_changed_at = $2 WHERE user_id = $3";
+		const { rowCount } = await dbConnection.queryDB(query, [
+			hashedPassword,
+			new Date(Date.now() + 1000),
+			userId,
+		]);
+		return !!rowCount;
+	}
 }
