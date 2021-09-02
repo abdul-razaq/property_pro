@@ -267,6 +267,27 @@ export class UserValidator {
 		req.errorExists = !!Object.keys(errors).length;
 		next();
 	}
+
+	/**
+	 * @method
+	 * Middleware that validates email address provided when user forgets password.
+	 * @param {Request} req HTTP Request Object
+	 * @param {Response} res HTTP Response object
+	 * @param {NextFunction} next Function to call next middleware in the middleware stack.
+	 *
+	 * Calls @method Validator.validateEmail to validate the email address provided.
+	 */
+	static validateForgotPassword(req, res, next) {
+		const errors = {
+			email: [],
+		};
+		errors.email = Validator.validateEmail(req.body.email);
+		for (let key in errors) {
+			if (!errors[key].length) delete errors[key];
+		}
+		req.errors = errors;
+		req.errorExists = !!Object.keys(errors).length;
+	}
 }
 
 /**
