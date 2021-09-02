@@ -39,7 +39,7 @@ class Validator {
 	 * Calls @method isNumber validator method to check if password contains only numbers.
 	 * Calls @method containsBadPassword validator method to check if password contains forbidden passwords.
 	 */
-	static validatePassword(password, confirmPassword, isSignUpValidation) {
+	static validatePassword(password, confirmPassword) {
 		const errors = [];
 		if (!password || basicValidator.isEmpty(password)) {
 			errors.push("password field cannot be empty.");
@@ -53,7 +53,7 @@ class Validator {
 		if (password && authValidator.containsBadPassword(password)) {
 			errors.push(`password field cannot contain the value '${password}'.`);
 		}
-		if (isSignUpValidation && confirmPassword !== password) {
+		if (confirmPassword && confirmPassword !== password) {
 			errors.push("password and confirm_password fields must match.");
 		}
 		return errors;
@@ -196,11 +196,7 @@ export class UserValidator {
 		} = signUpFields;
 
 		errors.email = Validator.validateEmail(email);
-		errors.password = Validator.validatePassword(
-			password,
-			confirm_password,
-			true
-		);
+		errors.password = Validator.validatePassword(password, confirm_password);
 		errors.firstName = Validator.validateName(first_name, "first_name");
 		errors.lastName = Validator.validateName(last_name, "last_name");
 		errors.address = Validator.validateAgentAddress(address, role);
@@ -234,12 +230,36 @@ export class UserValidator {
 			password: [],
 		};
 		errors.email = Validator.validateEmail(req.body.email);
-		errors.password = Validator.validatePassword(
-			req.body.password,
-			null,
-			false
-		);
+		errors.password = Validator.validatePassword(req.body.password, null);
 
+		for (let key in errors) {
+			if (!errors[key].length) delete errors[key];
+		}
+		req.errors = errors;
+		req.errorExists = !!Object.keys(errors).length;
+		next();
+	}
+
+	/**
+	 * @method
+	 * Middleware that validates user details for updating password.
+	 * @param {Request} req HTTP Request Object
+	 * @param {Response} res HTTP Response object
+	 * @param {NextFunction} next Function to call next middleware in the middleware stack.
+	 *
+	 * Calls @method Validator.validatePassword to validate the password
+	 */
+	static validatePasswordUpdate(req, res, next) {
+		const errors = {
+			oldPassword: [],
+			newPassword: [],
+		};
+		const { old_password, new_password, confirm_new_password } = req.body;
+		errors.oldPassword = Validator.validatePassword(old_password);
+		errors.newPassword = Validator.validatePassword(
+			new_password,
+			confirm_new_password
+		);
 		for (let key in errors) {
 			if (!errors[key].length) delete errors[key];
 		}
