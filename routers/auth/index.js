@@ -18,5 +18,10 @@ router.patch(
 	UserValidator.validatePasswordUpdate,
 	authControllers.updatePassword
 );
+router.patch(
+	"/forgotPassword",
+	UserValidator.validateForgotPassword,
+	authControllers.forgotPassword
+);
 
 export default router;
