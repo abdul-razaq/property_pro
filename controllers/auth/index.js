@@ -109,3 +109,29 @@ export async function loginUser(req, res, next) {
 	const jwt = User.generateJWT(user.user_id, email);
 	Response.OK(res, "login successful", { token: jwt, user });
 }
+
+export async function updatePassword(req, res, next) {
+	if (req.errorExists)
+		return Response.error(
+			res,
+			"validation failed. check input provided.",
+			httpStatuses.statusBadRequest,
+			{ errors: req.errors }
+		);
+	if (!(await User.isValidPassword(req.user.email, req.body.old_password))) {
+		return Response.error(
+			res,
+			"previous password provided is invalid.",
+			httpStatuses.statusForbidden
+		);
+	}
+	if (
+		!(await UserServices.updateUserPassword(
+			req.user.user_id,
+			req.body.new_password
+		))
+	) {
+		return next(new Error("unable to update password."));
+	}
+	Response.OK(res, "password updated successfully.");
+}
