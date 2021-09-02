@@ -23,5 +23,10 @@ router.patch(
 	UserValidator.validateForgotPassword,
 	authControllers.forgotPassword
 );
+router.patch(
+	"/password_reset/:token",
+	UserValidator.validateResetPassword,
+	authControllers.resetPassword
+);
 
 export default router;

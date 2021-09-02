@@ -171,3 +171,28 @@ export async function forgotPassword(req, res, next) {
 	}
 	Response.OK(res, "password reset token sent to email address.");
 }
+
+export async function resetPassword(req, res, next) {
+	if (req.errorExists)
+		return Response.error(
+			res,
+			"validation failed. check password value provided.",
+			httpStatuses.statusBadRequest,
+			{ errors: req.errors }
+		);
+	const hashedToken = new Token().hashToken(req.params.token);
+	const user = await UserServices.findUserByToken(hashedToken);
+	if (!user)
+		return Response.error(
+			res,
+			"invalid token or token has expired.",
+			httpStatuses.statusUnauthorized
+		);
+	if (
+		!(await UserServices.updateUserPassword(user.user_id, req.body.password))
+	) {
+		return Response.error(res, "unable to update password. try again later.");
+	}
+	await UserServices.resetUserToken(user.user_id);
+	Response.OK(res, "password updated successfully.");
+}

@@ -288,6 +288,32 @@ export class UserValidator {
 		req.errors = errors;
 		req.errorExists = !!Object.keys(errors).length;
 	}
+
+	/**
+	 * @method
+	 * Middleware that validates user details for resetting password.
+	 * @param {Request} req HTTP Request Object
+	 * @param {Response} res HTTP Response object
+	 * @param {NextFunction} next Function to call next middleware in the middleware stack.
+	 *
+	 * Calls @method Validator.validatePassword to validate the password
+	 */
+	static validateResetPassword(req, res, next) {
+		const errors = {
+			password: [],
+		};
+		const { password, confirm_password } = req.body;
+		errors.password = Validator.validatePassword(
+			password,
+			confirm_password
+		);
+		for (let key in errors) {
+			if (!errors[key].length) delete errors[key];
+		}
+		req.errors = errors;
+		req.errorExists = !!Object.keys(errors).length;
+		next();
+	}
 }
 
 /**
