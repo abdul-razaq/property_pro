@@ -1,7 +1,7 @@
 import multer from "multer";
 
-import AppError from "../../helpers/app_error";
-import httpStatuses from "../../helpers/http_statuses";
+import { AppError } from "../../helpers/app_error.js";
+import httpStatuses from "../../helpers/http_statuses.js";
 
 const multerStorage = multer.memoryStorage();
 
@@ -28,4 +28,4 @@ const upload = multer({
 	},
 });
 
-export default upload.single("image");
+export default upload;

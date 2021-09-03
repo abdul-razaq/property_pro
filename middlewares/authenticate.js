@@ -26,13 +26,13 @@ export default async function authenticate(req, res, next) {
 			"invalid or malformed bearer token.",
 			httpStatuses.statusUnauthorized
 		);
-	if (await User.hasChangedPassword(userId, iat)) {
-		return Response.error(
-			res,
-			"user recently changed their password, request for a new token.",
-			httpStatuses.statusForbidden
-		);
-  }
+	// if (await User.hasChangedPassword(userId, iat)) {
+	// 	return Response.error(
+	// 		res,
+	// 		"user recently changed their password, request for a new token.",
+	// 		httpStatuses.statusForbidden
+	// 	);
+  // }
 	req.user = user;
 	next();
 }

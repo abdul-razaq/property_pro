@@ -287,6 +287,7 @@ export class UserValidator {
 		}
 		req.errors = errors;
 		req.errorExists = !!Object.keys(errors).length;
+		next()
 	}
 
 	/**
@@ -319,4 +320,11 @@ export class UserValidator {
 /**
  * @class defines property validation middlewares.
  */
-export class PropertyValidator {}
+export class PropertyValidator {
+	static validateCreateProperty(req, res, next) {
+		const errors = {
+
+		};
+		next();
+	}
+}
