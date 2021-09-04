@@ -287,7 +287,7 @@ export class UserValidator {
 		}
 		req.errors = errors;
 		req.errorExists = !!Object.keys(errors).length;
-		next()
+		next();
 	}
 
 	/**
@@ -304,10 +304,7 @@ export class UserValidator {
 			password: [],
 		};
 		const { password, confirm_password } = req.body;
-		errors.password = Validator.validatePassword(
-			password,
-			confirm_password
-		);
+		errors.password = Validator.validatePassword(password, confirm_password);
 		for (let key in errors) {
 			if (!errors[key].length) delete errors[key];
 		}
@@ -321,10 +318,100 @@ export class UserValidator {
  * @class defines property validation middlewares.
  */
 export class PropertyValidator {
-	static validateCreateProperty(req, res, next) {
-		const errors = {
+	static _validateType(type) {
+		const errors = [];
+		if (!type || basicValidator.isEmpty(type)) {
+			errors.push("Type field cannot be empty.");
+		}
+		if (type && !basicValidator.isString(type)) {
+			errors.push("Type field must be a string value.");
+		}
+		if (type && basicValidator.isNumber(type)) {
+			errors.push("Type field cannot contain only numbers.");
+		}
+		return errors;
+	}
 
-		};
+	static _validateState(state) {
+		const errors = [];
+		if (!state || basicValidator.isEmpty(state)) {
+			errors.push("State field cannot be empty.");
+		}
+		if (state && !basicValidator.isString(state)) {
+			errors.push("State field must be a string value.");
+		}
+		if (
+			state &&
+			(basicValidator.isNumber(state) || basicValidator.containsNumber(state))
+		) {
+			errors.push("State field cannot contain numbers.");
+		}
+		return errors;
+	}
+
+	static _validateCity(city) {
+		const errors = [];
+		if (!city || basicValidator.isEmpty(city)) {
+			errors.push("City field cannot be empty.");
+		}
+		if (city && !basicValidator.isString(city)) {
+			errors.push("City field must be a string value.");
+		}
+		if (
+			city &&
+			(basicValidator.isNumber(city) || basicValidator.containsNumber(city))
+		) {
+			errors.push("City field cannot contain numbers.");
+		}
+		return errors;
+	}
+
+	static _validateAddress(address) {
+		const errors = [];
+		if (!address || basicValidator.isEmpty(address)) {
+			errors.push("Address field cannot be empty.");
+		}
+		if (address && !basicValidator.isString(address)) {
+			errors.push("Address field must be a string value.");
+		}
+		if (address && basicValidator.isNumber(address)) {
+			errors.push("Address field cannot contain only numbers.");
+		}
+		return errors;
+	}
+
+	static _validatePrice(price) {
+		const errors = [];
+		if (!price || basicValidator.isEmpty(price)) {
+			errors.push("Price field cannot be empty.");
+		}
+		if (price && (!basicValidator.isNumber(price) || !parseFloat(price))) {
+			errors.push(
+				"Price field must be a floating point number greater than 0.0"
+			);
+		}
+		return errors;
+	}
+
+	static validateCreateProperty(req, res, next) {
+		const errors = {};
+		const { type, state, price, city, address } = req.body;
+
+		errors.type = PropertyValidator._validateType(type);
+		errors.state = PropertyValidator._validateState(state);
+		errors.price = PropertyValidator._validatePrice(parseFloat(price));
+		errors.city = PropertyValidator._validateCity(city);
+		errors.address = PropertyValidator._validateAddress(address);
+		errors.image =
+			!req.file && (errors.image = "An image for the property is required.");
+
+		for (let err in errors) {
+			if (!errors[err].length) delete errors[err];
+		}
+		req.errors = errors;
+		req.errorsExists = !!Object.keys(errors).length;
 		next();
 	}
+
+	static validateUpdateProperty(req, res, next) {}
 }

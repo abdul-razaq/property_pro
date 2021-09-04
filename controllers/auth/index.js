@@ -140,7 +140,8 @@ export async function forgotPassword(req, res, next) {
 		return Response.error(
 			res,
 			"validation failed. check email address provided.",
-			httpStatuses.statusBadRequest
+			httpStatuses.statusBadRequest,
+			{ errors: req.errors }
 		);
 	const user = await UserServices.findUser(null, req.body.email);
 	if (!user)
