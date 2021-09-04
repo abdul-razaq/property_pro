@@ -131,7 +131,7 @@ export class Validator extends AbstractValidator {
 	 * Checks whether argument passed is of type string.
 	 * @param {*} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	isString(value) {
 		return typeof value === "string";
@@ -141,7 +141,7 @@ export class Validator extends AbstractValidator {
 	 * Checks whether argument passed is of type Number.
 	 * @param {*} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	isNumber(value) {
 		return typeof value === "number" && /^\d+(\.\d+)?$/.test(value);
@@ -151,7 +151,7 @@ export class Validator extends AbstractValidator {
 	 * Checks whether argument passed is of type boolean.
 	 * @param {*} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	isBoolean(value) {
 		return typeof value === "boolean";
@@ -161,7 +161,7 @@ export class Validator extends AbstractValidator {
 	 * Checks whether argument passed is of type function.
 	 * @param {*} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	isFunction(value) {
 		return typeof value === "function";
@@ -171,7 +171,7 @@ export class Validator extends AbstractValidator {
 	 * Checks to see whether argument passed contains number.
 	 * @param {string} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	containsNumber(value) {
 		return this.isString(value) && /\d/.test(value);
@@ -181,7 +181,7 @@ export class Validator extends AbstractValidator {
 	 * Checks to see whether argument passed is an empty value.
 	 * @param {*} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	isEmpty(value) {
 		if (value === undefined || value === null) return true;
@@ -198,7 +198,7 @@ export class Validator extends AbstractValidator {
 	 * Checks to see whether argument passed is 11 digits long and contains only numbers.
 	 * @param {string} phoneNumber
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	isValidPhoneNumber(phoneNumber) {
 		return this.isString(phoneNumber) && /^\d{11}$/.test(phoneNumber);
@@ -208,7 +208,7 @@ export class Validator extends AbstractValidator {
 	 * Checks to see whether argument passed contains special characters, i.e if argument contains any of the following characters +/*$^()[]{}\|~`&!@#%_=:;"'<>,.?).
 	 * @param {string} value
 	 *
-	 * @returns {boolean}
+	 * @returns boolean
 	 */
 	containsInvalidSpecialCharacters(value) {
 		const badCharRegExp =
@@ -226,7 +226,7 @@ export class AuthValidator extends Validator {
 	 * Checks to see if argument passed is a valid email address.
 	 * @param {string} email
 	 *
-	 * @returns {boolean} boolean
+	 * @returns boolean
 	 */
 	isValidEmail(email) {
 		const emailRegExp =
@@ -237,7 +237,7 @@ export class AuthValidator extends Validator {
 	/**
 	 * Checks to see if argument passed is a valid password that contains at least 8 characters.
 	 * @param {string} password
-	 * @returns {boolean} boolean.
+	 * @returns boolean.
 	 */
 	isValidPassword(password) {
 		return this.isString(password) && password.trim().length >= 8;
@@ -246,7 +246,7 @@ export class AuthValidator extends Validator {
 	/**
 	 * Checks to see if argument passed contains any bad password combination.
 	 * @param {string} password
-	 * @returns {boolean} boolean
+	 * @returns boolean
 	 */
 	containsBadPassword(password) {
 		const badPasswords = [
