@@ -1,6 +1,11 @@
 import dbConnection from "../config/database/db.js";
 
 export default class PropertyServices {
+	/**
+	 * Creates a new property
+	 * @param {object} propertyObject the property to create
+	 * @returns object - new property object.
+	 */
 	static async createProperty({
 		owner,
 		status,
@@ -30,11 +35,20 @@ export default class PropertyServices {
 		}
 	}
 
+	/**
+	 * Deletes a specific property
+	 * @param {number} propertyId id of property to delete
+	 * @param {number} owner id of the property owner
+	 * @returns boolean
+	 */
 	static async deleteProperty(propertyId, owner) {
 		const query =
 			"DELETE FROM properties WHERE property_id = $1 AND owner = $2";
 		try {
-			const { rowCount } = await dbConnection.queryDB(query, [propertyId, owner]);
+			const { rowCount } = await dbConnection.queryDB(query, [
+				propertyId,
+				owner,
+			]);
 			return !!rowCount;
 		} catch (error) {
 			throw error;
