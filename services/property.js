@@ -29,4 +29,15 @@ export default class PropertyServices {
 			throw error;
 		}
 	}
+
+	static async deleteProperty(propertyId, owner) {
+		const query =
+			"DELETE FROM properties WHERE property_id = $1 AND owner = $2";
+		try {
+			const { rowCount } = await dbConnection.queryDB(query, [propertyId, owner]);
+			return !!rowCount;
+		} catch (error) {
+			throw error;
+		}
+	}
 }

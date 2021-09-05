@@ -46,7 +46,7 @@ export async function createProperty(req, res, next) {
 		address,
 		propertyImage
 	);
-  let newProperty;
+	let newProperty;
 	try {
 		newProperty = await PropertyServices.createProperty(property);
 	} catch (error) {
@@ -57,4 +57,24 @@ export async function createProperty(req, res, next) {
 		);
 	}
 	Response.OK(res, "property created successfully.", newProperty);
+}
+
+export async function deleteProperty(req, res, next) {
+	if (!req.params.id)
+		return Response.error(
+			res,
+			"no property id supplied.",
+			httpStatuses.statusBadRequest
+		);
+	if (!(await PropertyServices.deleteProperty(req.params.id, req.user.user_id)))
+		return Response.error(
+			res,
+			"error deleting property.",
+			httpStatuses.statusInternalServerError
+		);
+	Response.OK(
+		res,
+		httpStatuses.statusNoContent,
+		"property deleted successfully"
+	);
 }

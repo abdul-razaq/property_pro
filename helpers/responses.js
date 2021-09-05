@@ -82,8 +82,13 @@ export default class Response {
 	 *
 	 * Send success response.
 	 */
-	static OK(res, message, data) {
-		return this._sendResponse(res, httpStatuses.statusOK, message, data);
+	static OK(res, statusCode, message, data) {
+		return this._sendResponse(
+			res,
+			statusCode ?? httpStatuses.statusOK,
+			message,
+			data
+		);
 	}
 
 	/**
