@@ -9,14 +9,13 @@ import helmet from "helmet";
 import xss from "xss-clean";
 import compression from "compression";
 
-import Response from "./helpers/responses.js";
-
-import Migration from "./config/database/migrations.js";
-import globalErrorHandler from "./middlewares/error_handler.js";
-
 import authRouter from "./routers/auth/index.js";
 import userRouter from "./routers/user/index.js";
 import propertyRouter from "./routers/property/index.js";
+import globalErrorHandler from "./middlewares/error_handler.js";
+
+import Migration from "./config/database/migrations.js";
+import Response from "./helpers/responses.js";
 
 dotenv.config();
 
