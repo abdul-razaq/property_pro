@@ -9,15 +9,20 @@ import { PropertyValidator } from "../../middlewares/validators.js";
 
 const router = express.Router();
 
+router.use(authenticate);
+
 router
 	.route("/")
 	.put(
-		authenticate,
 		authorize("agent"),
 		uploadImage("image"),
 		resizeImage,
 		PropertyValidator.validateCreateProperty,
 		propertyControllers.createProperty
 	);
+
+router
+	.route("/:id")
+	.delete(authorize("agent", "admin"), propertyControllers.deleteProperty);
 
 export default router;
