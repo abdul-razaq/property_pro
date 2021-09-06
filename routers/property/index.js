@@ -25,4 +25,10 @@ router
 	.route("/:id")
 	.delete(authorize("agent", "admin"), propertyControllers.deleteProperty);
 
+router.patch(
+	"/:id/sold",
+	authorize("agent"),
+	propertyControllers.markPropertyAsSold
+);
+
 export default router;
