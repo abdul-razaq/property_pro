@@ -78,3 +78,25 @@ export async function deleteProperty(req, res, next) {
 		"property deleted successfully"
 	);
 }
+
+
+export async function markPropertyAsSold(req, res, next) {
+	if (!req.params.id)
+		return Response.error(
+			res,
+			"property id is required.",
+			httpStatuses.statusBadRequest
+		);
+	if (
+		!(await PropertyServices.markPropertyAsSold(
+			req.params.id,
+			req.user.user_id
+		))
+	)
+		return Response.error(
+			res,
+			"unable to mark property as sold.",
+			httpStatuses.statusForbidden
+		);
+	Response.OK(res, "property marked as sold successfully.");
+}

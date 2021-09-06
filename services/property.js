@@ -54,4 +54,21 @@ export default class PropertyServices {
 			throw error;
 		}
 	}
+
+	/**
+	 * Mark a specified property's status as "sold".
+	 * @param {number} propertyId id of the property to update
+	 * @param {number} owner id of the property owner
+	 * @returns boolean
+	 */
+	static async markPropertyAsSold(propertyId, owner) {
+		const query =
+			"UPDATE properties SET status = $1 WHERE property_id = $2 AND owner = $3";
+		const { rowCount } = await dbConnection.queryDB(query, [
+			"sold",
+			propertyId,
+			owner,
+		]);
+		return !!rowCount;
+	}
 }
