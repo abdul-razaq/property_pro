@@ -13,6 +13,7 @@ router.use(authenticate);
 
 router
 	.route("/")
+	.get(propertyControllers.getAllProperties)
 	.put(
 		authorize("agent"),
 		uploadImage("image"),
@@ -23,6 +24,7 @@ router
 
 router
 	.route("/:id")
+	.get(propertyControllers.getProperty)
 	.delete(authorize("agent", "admin"), propertyControllers.deleteProperty);
 
 router.patch(

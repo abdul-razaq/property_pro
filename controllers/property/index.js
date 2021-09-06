@@ -79,7 +79,6 @@ export async function deleteProperty(req, res, next) {
 	);
 }
 
-
 export async function markPropertyAsSold(req, res, next) {
 	if (!req.params.id)
 		return Response.error(
@@ -99,4 +98,20 @@ export async function markPropertyAsSold(req, res, next) {
 			httpStatuses.statusForbidden
 		);
 	Response.OK(res, "property marked as sold successfully.");
+}
+
+export async function getProperty(req, res, next) {
+	const property = await PropertyServices.getProperty(req.params.id);
+	if (!property) {
+		return Response.error(
+			res,
+			"property not found.",
+			httpStatuses.statusNotFound
+		);
+	}
+	Response.OK(res, "property fetched successfully.", property);
+}
+
+export async function getAllProperties(req, res, next) {
+	
 }

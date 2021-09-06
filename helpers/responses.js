@@ -13,9 +13,11 @@ dotenv.config();
 export default class Response {
 	/**
 	 * @private @method
-	 * @param {*} res HTTP Response object
-	 * @param {*} message HTTP Response object
-	 * @param {*} data data value to send along in the HTTP response
+	 * @param {Response} res HTTP Response object
+	 * @param {number} code http response status code
+	 * @param {string} message HTTP Response object
+	 * @param {object} data data value to send along in the HTTP response
+	 * @param {AppError | Error} error error object
 	 *
 	 * Method is private and not to be used outside of this class.
 	 */
@@ -41,8 +43,9 @@ export default class Response {
 	/**
 	 * @public
 	 * @method
-	 * @param {*} res HTTP Response object
-	 * @param {*} error AppError error object
+	 * @param {Response} res HTTP Response object
+	 * @param {AppError | Error} error Error object
+	 * @param {object} data data value to send along in the HTTP response
 	 *
 	 * Send success response message.
 	 */
@@ -76,39 +79,41 @@ export default class Response {
 	/**
 	 * @public
 	 * @method
-	 * @param {*} res HTTP Response object
-	 * @param {*} message HTTP Response object
-	 * @param {*} data data value to send along in the HTTP response
+	 * @param {Response} res HTTP Response object
+	 * @param {number} statusCode http response status code
+	 * @param {string} message HTTP Response object
+	 * @param {object} data data value to send along in the HTTP response
 	 *
 	 * Send success response.
 	 */
-	static OK(res, statusCode, message, data) {
+	static OK(res, message, data, statusCode = httpStatuses.statusOK,) {
+		return this._sendResponse(res, statusCode, message, data);
+	}
+
+	/**
+	 * @public
+	 * @method
+	 * @param {Response} res HTTP Response object
+	 * @param {string} message HTTP Response object
+	 * @param {object} data data value to send along in the HTTP response
+	 *
+	 * Send route not implemented response.
+	 */
+	static routeNotImplemented(res) {
 		return this._sendResponse(
 			res,
-			statusCode ?? httpStatuses.statusOK,
-			message,
-			data
+			httpStatuses.statusNotImplemented,
+			"this route has not been implemented."
 		);
 	}
 
 	/**
 	 * @public
 	 * @method
-	 * @param {*} res HTTP Response object
-	 * @param {*} message HTTP Response object
-	 * @param {*} data data value to send along in the HTTP response
-	 *
-	 * Send route not implemented response.
-	 */
-	static routeNotImplemented(res, message) {
-		return this._sendResponse(res, httpStatuses.statusNotImplemented, message);
-	}
-
-	/**
-	 * @public
-	 * @method
-	 * @param {*} res HTTP Response object
-	 * @param {*} data data value to send along in the HTTP response
+	 * @param {Response} res HTTP Response object
+	 * @param {string} message HTTP Response object
+	 * @param {number} statusCode http response status code
+	 * @param {object} data data value to send along in the HTTP response
 	 *
 	 * Send error response.
 	 */
