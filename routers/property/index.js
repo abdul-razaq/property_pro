@@ -13,7 +13,7 @@ router.use(authenticate);
 
 router
 	.route("/")
-	.get(propertyControllers.getAllProperties)
+	.get(propertyControllers.getProperties)
 	.put(
 		authorize("agent"),
 		uploadImage("image"),

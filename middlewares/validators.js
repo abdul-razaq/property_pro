@@ -395,7 +395,7 @@ export class PropertyValidator {
 
 	static validateCreateProperty(req, res, next) {
 		const errors = {};
-		const { type, state, price, city, address } = req.body;
+		const { type, state, price, city, address, status } = req.body;
 
 		errors.type = PropertyValidator._validateType(type);
 		errors.state = PropertyValidator._validateState(state);
@@ -404,7 +404,9 @@ export class PropertyValidator {
 		errors.address = PropertyValidator._validateAddress(address);
 		errors.image =
 			!req.file && (errors.image = "An image for the property is required.");
-
+		errors.status =
+			!["available", "rent"].includes(status) &&
+			"Invalid property status. status must be either 'available' or 'rent'";
 		for (let err in errors) {
 			if (!errors[err].length) delete errors[err];
 		}

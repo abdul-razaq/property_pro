@@ -14,8 +14,9 @@ export async function createProperty(req, res, next) {
 			httpStatuses.statusBadRequest,
 			{ errors: req.errors }
 		);
+	let propertyImage;
 	try {
-		const propertyImage = (
+		propertyImage = (
 			await cloudinary.uploader.upload(
 				`uploads/properties/${req.body.propertyImage}`,
 				{
@@ -24,7 +25,7 @@ export async function createProperty(req, res, next) {
 			)
 		).secure_url;
 		await fs.promises.rm(
-			`uploads/properties/${propertyImage.original_filename}.${propertyImage.original_extension}`,
+			`uploads/properties/$${req.body.propertyImage}.${propertyImage.original_extension}`,
 			{
 				force: true,
 				maxRetries: 2,
@@ -112,6 +113,11 @@ export async function getProperty(req, res, next) {
 	Response.OK(res, "property fetched successfully.", property);
 }
 
-export async function getAllProperties(req, res, next) {
-	
+export async function getProperties(req, res, next) {
+	const { type } = req.query;
+	const properties = await PropertyServices.getProperties(type);
+	Response.OK(res, "properties fetched successfully", {
+		properties,
+		total: properties.length,
+	});
 }

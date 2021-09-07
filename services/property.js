@@ -79,8 +79,24 @@ export default class PropertyServices {
 	 */
 	static async getProperty(propertyId) {
 		const query =
-			'SELECT CONCAT(u.first_name, " ", u.last_name) AS full_name, u.email, u.date_registered, u.phone_number, p.property_id, p.status, p.type, p.price, p.state, p.city, p.address, p.created_on, p.property_image, p.updated_on FROM properties AS p INNER JOIN users AS u ON p.owner = u.user_id WHERE p.property_id = $1';
+			"SELECT u.first_name, u.last_name, u.email, u.date_registered, u.phone_number, p.property_id, p.status, p.type, p.price, p.state, p.city, p.address, p.created_on, p.property_image, p.updated_on FROM properties AS p INNER JOIN users AS u ON p.owner = u.user_id WHERE p.property_id = $1";
 		const result = await dbConnection.queryDB(query, [propertyId]);
 		return result.rows[0];
+	}
+
+	/**
+	 * retrieves all properties of any or a specific type.
+	 * @param {string} type the type of properties to retrieve
+	 * @returns Array
+	 */
+	static async getProperties(type) {
+		const query = `SELECT u.first_name, u.last_name, u.email, u.date_registered, u.phone_number, p.property_id, p.status, p.type, p.price, p.state, p.city, p.address, p.created_on, p.property_image, p.updated_on FROM properties AS p INNER JOIN users AS u ON p.owner = u.user_id${
+			type ? " WHERE type = $1" : ""
+		}`;
+		const { rows } = await dbConnection.queryDB(
+			query,
+			type ? [type] : undefined
+		);
+		return rows;
 	}
 }
