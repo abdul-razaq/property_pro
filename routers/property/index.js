@@ -33,4 +33,10 @@ router.patch(
 	propertyControllers.markPropertyAsSold
 );
 
+router.post(
+	"/:id/flag",
+	PropertyValidator.validateFlagProperty,
+	propertyControllers.flagProperty
+);
+
 export default router;

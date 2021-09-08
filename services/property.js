@@ -99,4 +99,21 @@ export default class PropertyServices {
 		);
 		return rows;
 	}
+
+	/**
+	 * flag a specific property
+	 * @param {number} propertyId the id of the property to flag
+	 * @param {string} reason reason for flagging
+	 * @param {string} description description of the flag
+	 */
+	static async flagProperty(propertyId, reason, description) {
+		const query =
+			"INSERT INTO flags (property, reason, description) VALUES ($1, $2, $3)";
+		const { rowCount } = await dbConnection.queryDB(query, [
+			propertyId,
+			reason,
+			description,
+		]);
+		return !!rowCount;
+	}
 }

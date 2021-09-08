@@ -121,3 +121,19 @@ export async function getProperties(req, res, next) {
 		total: properties.length,
 	});
 }
+
+export async function flagProperty(req, res, next) {
+	if (req.errorExists)
+		return Response.error(
+			res,
+			"validation failed. check input values provided.",
+			httpStatuses.statusBadRequest,
+			{ errors: req.errors }
+		);
+	const { reason, description } = req.body;
+	if (
+		!(await PropertyServices.flagProperty(req.params.id, reason, description))
+	)
+		return Response.error(res, "unable to flag property");
+	Response.OK(res, "property flagged successfully");
+}

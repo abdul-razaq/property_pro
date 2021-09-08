@@ -86,7 +86,7 @@ export default class Response {
 	 *
 	 * Send success response.
 	 */
-	static OK(res, message, data, statusCode = httpStatuses.statusOK,) {
+	static OK(res, message, data, statusCode = httpStatuses.statusOK) {
 		return this._sendResponse(res, statusCode, message, data);
 	}
 
@@ -117,7 +117,12 @@ export default class Response {
 	 *
 	 * Send error response.
 	 */
-	static error(res, message, statusCode, data) {
+	static error(
+		res,
+		message,
+		statusCode = httpStatuses.statusInternalServerError,
+		data
+	) {
 		const errObj =
 			statusCode === httpStatuses.statusInternalServerError
 				? new Error(

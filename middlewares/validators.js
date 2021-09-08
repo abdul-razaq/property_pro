@@ -415,5 +415,19 @@ export class PropertyValidator {
 		next();
 	}
 
+	static validateFlagProperty(req, res, next) {
+		const errors = {};
+		const { reason, description } = req.body;
+		errors.reason = Validator.validateName(reason, "reason");
+		errors.description = Validator.validateName(description, "description");
+
+		for (let prop in errors) {
+			if (!errors[prop].length) delete errors[prop];
+		}
+		req.errors = errors;
+		req.errorExists = !!Object.keys(errors).length;
+		next();
+	}
+
 	static validateUpdateProperty(req, res, next) {}
 }
