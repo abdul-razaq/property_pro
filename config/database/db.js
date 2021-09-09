@@ -3,10 +3,14 @@ import pg from "pg";
 
 dotenv.config();
 
-const connectionString =
-	process.env.APP_MODE === "DEVELOPMENT"
-		? process.env.DEV_DB_CONN_STRING
-		: process.env.PROD_DB_CONN_STRING;
+let connectionString;
+if (process.env.APP_MODE === "DEVELOPMENT") {
+	connectionString = process.env.DEV_DB_CONN_STRING;
+} else if (process.env.APP_MODE === "PRODUCTION") {
+	connectionString = process.env.PROD_DB_CONN_STRING;
+} else {
+	connectionString = process.env.TEST_DB_CONN_STRING;
+}
 
 const pool = new pg.Pool({
 	connectionString,

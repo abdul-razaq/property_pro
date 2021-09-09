@@ -1,3 +1,7 @@
+import "dotenv";
+
+dotenv.config();
+
 const {
 	calculateTip,
 	fahrenheitToCelsius,
